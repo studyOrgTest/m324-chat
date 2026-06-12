@@ -54,9 +54,13 @@ the repository exists on GitHub (step 1).
 1. In the repository: **Settings → Actions → Runners → New self-hosted runner**. Pick
    **macOS** and the architecture matching your Mac (Apple Silicon → `arm64`,
    Intel → `x64`).
-2. Run the commands shown on that page in a terminal (download, extract, then
-   `./config.sh --url https://github.com/<ORG>/m324-chat --token <TOKEN>`). The token is
-   short-lived, so generate it right before running `config.sh`. Accept the defaults
+2. Run the commands shown on that page **in a dedicated folder outside this project**
+   (e.g. `~/actions-runner`) — never inside the repository, otherwise the runner's own
+   files would land in your project. The page's first command
+   (`mkdir actions-runner && cd actions-runner`) creates that folder, so run it from your
+   home directory, not from the project. The remaining commands are: download, extract,
+   then `./config.sh --url https://github.com/<ORG>/m324-chat --token <TOKEN>`. The token
+   is short-lived, so generate it right before running `config.sh`. Accept the defaults
    (name, the `self-hosted` label, `_work` folder).
 3. Start the runner from a terminal **where `docker ps` and `kubectl get nodes` already
    work**, so it inherits the correct PATH:
