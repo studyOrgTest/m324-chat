@@ -12,5 +12,5 @@
     "skipLibCheck": true
   },
   "include": ["server/**/*"],
-  "exclude": ["server/**/*.spec.ts"]
+  "exclude": ["server/**/*.test.ts", "server/**/*.spec.ts"]
 }

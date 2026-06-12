@@ -1,0 +1,15 @@
+# Uptime Kuma monitoring stack.
+# Start with: docker compose -f docker-compose.monitoring.yml up -d
+# Then open http://localhost:3001 to configure monitors and the e-mail notifier.
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    volumes:
+      - uptime-kuma-data:/app/data
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+
+volumes:
+  uptime-kuma-data:

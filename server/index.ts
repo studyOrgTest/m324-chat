@@ -10,8 +10,6 @@ import { WebSocket } from 'ws';
 const app = express();
 const server = http.createServer(app);
 
-const myVar = 1;
-
 // create a livereload server
 const env = process.env.NODE_ENV || 'development';
 if (env !== 'production' && env !== 'test') {
@@ -31,6 +29,10 @@ app.use(express.static('client'));
 app.get('/', (req: Request, res: Response) => {
   res.sendFile(__dirname + '/client/index.html');
 });
+// Healthcheck endpoint for monitoring (Kubernetes probes and Uptime Kuma)
+app.get('/healthcheck', (req: Request, res: Response) => {
+  res.status(200).json({ status: 'OK' });
+});
 // Initialize the websocket server
 initializeWebsocketServer(server);
 
@@ -47,7 +49,7 @@ if (env !== 'test') {
   startServer(serverPort);
 }
 
-const waitForSocketState = (socket: WebSocket, state: any) => {
+const waitForSocketState = (socket: WebSocket, state: number) => {
   return new Promise(function (resolve) {
     setTimeout(function () {
       if (socket.readyState === state) {
