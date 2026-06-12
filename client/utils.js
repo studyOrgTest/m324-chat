@@ -38,7 +38,7 @@ const generateMessage = (message, myUser) => {
     pictureClasses += ' right-1';
     messageElement.classList.add('justify-end');
   } else {
-    messageClasses += ' bg-gray-300 text-gray-800';
+    messageClasses += ' bg-gray-600 text-gray-100';
     pictureClasses += ' left-1';
     messageElement.classList.add('justify-start');
   }
