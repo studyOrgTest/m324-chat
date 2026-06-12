@@ -11,17 +11,23 @@ own accounts and machine. Do them in order.
 
 ## 0. Install Docker Desktop (provides Docker + kubectl + local Kubernetes)
 
-1. Install **Docker Desktop** for macOS.
-2. Open **Settings → Kubernetes → Enable Kubernetes**, then wait until the cluster is
-   green.
-3. Verify in a terminal:
+1. Install **Docker Desktop** for macOS and make sure it is running.
+2. Open **Settings → Kubernetes**, enable Kubernetes / create the cluster. If you are
+   asked for a provisioner, the default (**kubeadm**) is fine — it gives a single-node
+   cluster. Click **Apply & Restart** and wait until the status indicator turns **green**
+   ("Kubernetes running").
+3. (Optional) Under **Settings → Resources** give Docker at least ~4 GB RAM; the app is
+   small, so the defaults are usually enough.
+4. Verify in a terminal:
    ```bash
    docker version
    kubectl config current-context   # should print: docker-desktop
+   kubectl get nodes                # should list one node in status Ready
    ```
 
-This single install gives you `docker`, `kubectl` and a local Kubernetes cluster, so
-k3d/minikube are not needed.
+This single install gives you `docker`, `kubectl` and a local single-node Kubernetes
+cluster, so k3d/minikube are not needed. The NodePort service is then reachable at
+`http://localhost:30080`.
 
 ---
 
@@ -42,17 +48,26 @@ k3d/minikube are not needed.
 ## 2. Self-hosted runner (at least one)
 
 The CI/CD workflows use `runs-on: self-hosted`, and the deploy step needs to reach your
-local Kubernetes cluster — so the runner must run on your machine.
+local Kubernetes cluster — so the runner must run on your machine. Register it **after**
+the repository exists on GitHub (step 1).
 
-1. In the repository: **Settings → Actions → Runners → New self-hosted runner** (choose
-   macOS).
-2. Run the displayed commands (download, then `./config.sh --url ... --token ...`).
-3. Start the runner:
+1. In the repository: **Settings → Actions → Runners → New self-hosted runner**. Pick
+   **macOS** and the architecture matching your Mac (Apple Silicon → `arm64`,
+   Intel → `x64`).
+2. Run the commands shown on that page in a terminal (download, extract, then
+   `./config.sh --url https://github.com/<ORG>/m324-chat --token <TOKEN>`). The token is
+   short-lived, so generate it right before running `config.sh`. Accept the defaults
+   (name, the `self-hosted` label, `_work` folder).
+3. Start the runner from a terminal **where `docker ps` and `kubectl get nodes` already
+   work**, so it inherits the correct PATH:
    ```bash
-   ./run.sh          # foreground; or install as a service with ./svc.sh install && ./svc.sh start
+   ./run.sh
    ```
-4. Make sure `docker` and `kubectl` are on the runner's PATH (they are if Docker Desktop
-   is installed for your user).
+   (You can later install it as a service with `./svc.sh install && ./svc.sh start`, but
+   foreground `./run.sh` is simplest and avoids PATH issues with Docker Desktop.)
+4. Keep the runner **and Docker Desktop running** whenever you push branches, open pull
+   requests or merge into `master`, so the CI and CD pipelines can execute. The workflows
+   match the default `self-hosted` label, so no extra configuration is needed.
 
 ---
 
