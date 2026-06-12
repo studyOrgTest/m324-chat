@@ -25,6 +25,7 @@
         break;
       case 'typing':
         typingUsers = message.users;
+        renderTyping(typingUsers, myUser);
         break;
       default:
         break;
