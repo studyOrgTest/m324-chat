@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: m324-chat
+  namespace: m324
+  labels:
+    app: m324-chat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: m324-chat
+  template:
+    metadata:
+      labels:
+        app: m324-chat
+    spec:
+      containers:
+        - name: m324-chat
+          # __IMAGE__ is replaced with the pushed Docker Hub tag by k8s/deploy.sh
+          image: __IMAGE__
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: production
+          # Readiness/liveness probes reuse the /healthcheck endpoint
+          readinessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
