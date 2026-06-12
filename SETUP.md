@@ -37,9 +37,6 @@ k3d/minikube are not needed.
 3. Add your lecturer ("Dozent") as an **Owner/Admin** of the organization (Org → People →
    Invite member → role Owner).
 
-> Assistant can run the `gh` commands for the repository, issues and pull requests once
-> the organization exists — just provide the org name.
-
 ---
 
 ## 2. Self-hosted runner (at least one)
@@ -77,11 +74,12 @@ local Kubernetes cluster — so the runner must run on your machine.
 The grading rubric expects a Project with a Kanban board, one issue per requirement, and
 the issues linked/assigned/moved to the right status.
 
-**Option A – let the assistant script it** (needs the `project` scope once):
+**Option A – via the `gh` CLI** (grant the `project` scope once):
 ```bash
 gh auth refresh -s project,read:project
 ```
-Then the assistant can create the project, the issues and link them.
+Then create the project (`gh project create`), the issues (`gh issue create`) and add them
+to the board.
 
 **Option B – web UI:** Org → Projects → New project → Board. Add columns
 `Todo / In Progress / Done`. Create one issue per requirement (dark mode, connected users,
@@ -91,13 +89,24 @@ typing indicator, /healthcheck, CI pipeline, CD pipeline) and add them to the bo
 
 ## 5. Branching / pull-request flow
 
-The feature branches already exist locally and are pushed in step 1. Merge them into
-`development` via pull requests, then merge `development` into `master` to trigger the CD
-deployment. The exact procedure is documented in
+The feature branches already exist locally and are pushed in step 1. Open a pull request
+from each feature branch into `development` and **merge them in the order they were built**,
+so the diffs stay clean:
+
+1. `feature/ci-pipeline`
+2. `feature/healthcheck-endpoint`
+3. `feature/dark-mode`
+4. `feature/active-users-list`
+5. `feature/typing-indicator`
+6. `feature/cd-pipeline`
+7. `docs/documentation`
+
+Then open a final pull request from `development` into `master`; merging it triggers the
+CD deployment. The developer procedure is documented in
 [`DOKUMENTATION.md`](DOKUMENTATION.md#33-konkretes-vorgehen-für-entwickler).
 
-> Use **merge commits** (not squash) when merging the stacked feature PRs, so the history
-> stays consistent.
+> Use **merge commits** (not squash) when merging the stacked PRs, so the history stays
+> consistent.
 
 ---
 
