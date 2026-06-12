@@ -21,6 +21,7 @@
         break;
       case 'activeUsers':
         activeUsers = message.users;
+        renderActiveUsers(activeUsers);
         break;
       case 'typing':
         typingUsers = message.users;

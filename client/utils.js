@@ -50,3 +50,15 @@ const generateMessage = (message, myUser) => {
     `;
   return messageElement;
 };
+
+// Render the list of currently connected users into the header
+const renderActiveUsers = (users) => {
+  const container = document.getElementById('activeUsers');
+  if (!container) return;
+  if (!users || users.length === 0) {
+    container.textContent = 'No users online';
+    return;
+  }
+  const names = users.map((user) => user.name).join(', ');
+  container.textContent = `Online (${users.length}): ${names}`;
+};
