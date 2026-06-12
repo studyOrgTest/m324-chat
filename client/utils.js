@@ -46,7 +46,7 @@ const generateMessage = (message, myUser) => {
       <div class="${messageClasses}">
         <p class="text-sm leading-snug">${message.user.name}: ${message.message}</p>
       </div>
-      <img src="https://i.pravatar.cc/40?u=${message.userId}" alt="Profile" class="${pictureClasses}" />
+      <img src="https://i.pravatar.cc/40?u=${message.user.id}" alt="Profile" class="${pictureClasses}" />
     `;
   return messageElement;
 };
@@ -61,4 +61,18 @@ const renderActiveUsers = (users) => {
   }
   const names = users.map((user) => user.name).join(', ');
   container.textContent = `Online (${users.length}): ${names}`;
+};
+
+// Render the 'is typing' indicator, excluding the current user from the list
+const renderTyping = (users, myUser) => {
+  const container = document.getElementById('typingIndicator');
+  if (!container) return;
+  const others = (users || []).filter((user) => user.id !== myUser.id);
+  if (others.length === 0) {
+    container.textContent = '';
+    return;
+  }
+  const names = others.map((user) => user.name).join(', ');
+  const verb = others.length === 1 ? 'schreibt' : 'schreiben';
+  container.textContent = `${names} ${verb} …`;
 };
