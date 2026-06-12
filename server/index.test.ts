@@ -88,4 +88,14 @@ describe('WebSocket Server', () => {
     expect(responseMessages[0]).toEqual(expectedMessage);
     expect(responseMessages[1]).toEqual({ type: 'typing', users: [] });
   });
+
+  describe('Healthcheck endpoint', () => {
+    // The monitoring endpoint must report a healthy status for K8s probes and Uptime Kuma
+    test('GET /healthcheck returns 200 and an OK status', async () => {
+      const response = await fetch(`http://localhost:${port}/healthcheck`);
+      expect(response.status).toBe(200);
+      const body = await response.json();
+      expect(body).toEqual({ status: 'OK' });
+    });
+  });
 });
